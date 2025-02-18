@@ -32,10 +32,11 @@
 # You will need to use log and -inf here. 
 # You can add any additional import statements you need here.
 from math import log, inf
-
+import csv
 
 #######################
-# YOUR CODE GOES HERE #
+def score_unigrams (trainingdata, testfile, outputfile):
+
 #######################
 
 
