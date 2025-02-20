@@ -19,7 +19,7 @@ def test_score_unigrams(monkeypatch, capsys):
     ]
     result = score_unigrams(
         Path('training_data'), 
-        Path('training_data/test_data/test_sentences.txt'), 
+        Path('test_data/test_sentences.txt'), 
         Path('output.csv'))
     
     assert result == None
