@@ -32,13 +32,64 @@
 # You will need to use log and -inf here. 
 # You can add any additional import statements you need here.
 from math import log, inf
+import csv
+from pathlib import Path
 
 
 #######################
-# YOUR CODE GOES HERE #
+def score_unigrams(trainingfiles, testfile, outputfile):
+    
+    contents_list = []
+    training_path = Path(trainingfiles)
+    txt_files = training_path.glob("*.txt")
+
+
+#txt files contents in list
+    for txt_file in txt_files:
+        with open(txt_file, "r") as file:
+            contents = file.read().lower().split()
+            contents_list.extend(contents)
+
+#counting how many times each character is counted
+    word_counter = {}
+    for word in contents_list:
+        word_counter[word] = word_counter.get(word,0) + 1 
+    total_words = sum(word_counter.values())
+
+    word_probability = {word: count/ total_words for word, count in word_counter.items()}
+
+#sentence prob
+    sent_prob = []
+
+    with open(testfile, "r") as file:
+        for line in file:
+            sentence = line.strip()
+            no_caps_sent = sentence.lower()
+            words = no_caps_sent.split()
+
+#log probabilities
+            log_prob = 0 
+            for word in words:
+                if word in word_probability:
+                    log_prob += log(word_probability[word])
+                else:
+                    log_prob = -inf
+                    break
+            sent_prob.append((sentence, log_prob))
+
+#write results to CSV
+    with open(outputfile, "w") as file:
+        writer = csv.DictWriter(file, fieldnames=["sentence","unigram_prob"])
+        writer.writeheader()
+
+        for sentence, prob in sent_prob:
+            if prob == -inf:
+                writer.writerow({"sentence": sentence, "unigram_prob": "-inf"})
+            else:
+                writer.writerow({"sentence": sentence, "unigram_prob": str(prob)})
+
+    return None
 #######################
-
-
 
 # Do not modify the following line
 if __name__ == "__main__":
